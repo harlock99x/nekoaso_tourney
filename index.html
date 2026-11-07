@@ -186,41 +186,7 @@
 
 <script type="module">
 
-const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const TOURNAMENT_ID = "main-event";
 
-  // ★ ここを追加：URLパラメータから pid（プレイヤーID）を取得 ★
-  const urlParams = new URLSearchParams(window.location.search);
-  const queryPid = urlParams.get("pid");
-
-  let myPlayerId = queryPid || localStorage.getItem("tourney_player_id");
-  let myPlayerName = localStorage.getItem("tourney_player_name");
-  let currentActiveMatchId = null;
-  let isCurrentPlayer1 = false;
-  let opponentData = null;
-  let currentTourneyStatus = "entry";
-  let curSet = 1, curRound = 0;
-
-  // もしURLから直接IDを渡されてアクセスされた場合、DBから名前を引いて自動復帰
-  if (queryPid) {
-    getDoc(doc(db, `tournaments/${TOURNAMENT_ID}/players`, queryPid)).then((snap) => {
-      if (snap.exists()) {
-        myPlayerId = queryPid;
-        myPlayerName = snap.data().name;
-        localStorage.setItem("tourney_player_id", myPlayerId);
-        localStorage.setItem("tourney_player_name", myPlayerName);
-        showDashboard();
-      } else {
-        alert("該当するプレイヤーが見つかりませんでした。");
-        showEntry();
-      }
-    });
-  } else if (myPlayerId && myPlayerName) {
-    showDashboard();
-  } else {
-    showEntry();
-  }  
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
   import { 
     getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection, query, where, updateDoc 
