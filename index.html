@@ -3,15 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>トーナメント管理システム</title>
+  <title>プレイヤー画面</title>
   <style>
     :root {
       --primary: #2563eb;
       --bg: #f8fafc;
       --card: #ffffff;
       --text: #0f172a;
-      --border: #e2e8f0;
-      --success: #16a34a;
+      --border: #cbd5e1;
+      --win: #16a34a;
+      --lose: #dc2626;
+      --muted: #64748b;
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -37,7 +39,6 @@
       padding: 20px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
-    h2, h3 { margin-top: 0; }
     .badge {
       display: inline-block;
       background: var(--primary);
@@ -54,7 +55,7 @@
       border-radius: 8px;
       box-sizing: border-box;
       font-size: 1rem;
-      margin-bottom: 12px;
+      margin: 12px 0;
     }
     button {
       width: 100%;
@@ -67,9 +68,15 @@
       font-weight: bold;
       cursor: pointer;
     }
-    button.success { background: var(--success); }
-    button.secondary { background: #64748b; margin-top: 8px; }
-    button:disabled { background: #cbd5e1; cursor: not-allowed; }
+    .btn-leave {
+      background: transparent;
+      color: #ef4444;
+      border: 1px solid #fca5a5;
+      font-size: 0.8rem;
+      padding: 6px 12px;
+      width: auto;
+      border-radius: 6px;
+    }
     .match-box {
       text-align: center;
       padding: 16px;
@@ -77,70 +84,113 @@
       border-radius: 8px;
       margin: 12px 0;
     }
-    .match-table { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
-    .match-vs { font-size: 1.2rem; margin-top: 8px; font-weight: 600; }
-    .admin-panel {
-      border: 2px dashed #94a3b8;
-      background: #f1f5f9;
-      margin-top: 32px;
+    .match-table { font-size: 1.6rem; font-weight: bold; color: var(--primary); }
+    .match-vs { font-size: 1.3rem; margin-top: 6px; font-weight: 600; }
+    
+    .score-group-label {
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin: 12px 0 6px 0;
+      color: var(--muted);
+    }
+    .score-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .btn-win-score { background: #f0fdf4; border: 2px solid var(--win); color: var(--win); }
+    .btn-lose-score { background: #fef2f2; border: 2px solid var(--lose); color: var(--lose); }
+    .btn-draw-score { background: #f1f5f9; border: 2px solid var(--muted); color: var(--muted); }
+    
+    .result-reported {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      color: var(--win);
+      font-weight: bold;
+    }
+    .btn-revert {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      font-size: 0.85rem;
+      padding: 6px;
+      margin-top: 8px;
     }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <!-- 大会ステータス表示 -->
+  <!-- ヘッダー -->
   <div class="card" style="text-align: center;">
     <span id="roundBadge" class="badge">エントリー受付中</span>
-    <h2 id="tourneyTitle" style="margin: 8px 0 0 0;">トーナメント大会</h2>
+    <h2 style="margin: 8px 0 0 0;">トーナメント大会</h2>
   </div>
 
-  <!-- 1. エントリー画面（未登録時のみ表示） -->
+  <!-- 1. エントリー画面 -->
   <div id="entrySection" class="card">
-    <h3>大会エントリー</h3>
-    <p style="font-size: 0.9rem; color: #64748b;">お名前（ニックネーム）を入力して参加してください。</p>
+    <h3 style="margin-top:0;">大会エントリー</h3>
+    <p style="font-size: 0.9rem; color: var(--muted); margin: 0;">ニックネームを入力して登録してください。</p>
     <input type="text" id="playerNameInput" placeholder="例: たろう">
     <button id="btnEntry">エントリーする</button>
   </div>
 
-  <!-- 2. プレイヤーダッシュボード（登録後に表示） -->
+  <!-- 2. 登録済み画面 -->
   <div id="playerSection" class="card" style="display: none;">
-    <div style="font-size: 0.85rem; color: #64748b;">参加プレイヤー</div>
-    <h3 id="myPlayerName" style="margin-bottom: 8px;">-</h3>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <span style="font-size: 0.8rem; color: var(--muted);">参加者名:</span>
+        <h3 id="myPlayerName" style="margin: 0;">-</h3>
+      </div>
+      <!-- ★ これでいつでも抜けられます ★ -->
+      <button id="btnLeave" class="btn-leave">登録を抜ける</button>
+    </div>
 
+    <!-- マッチ案内 -->
     <div id="matchDisplay" class="match-box">
       <div id="tableNo" class="match-table">待機中</div>
-      <div id="vsInfo" class="match-vs">運営の対戦開始をお待ちください</div>
+      <div id="vsInfo" class="match-vs">組み合わせの発表をお待ちください</div>
     </div>
 
-    <!-- 勝敗入力ボタン -->
+    <!-- スコア送信 -->
     <div id="actionArea" style="display: none;">
-      <button id="btnWin" class="success">対戦に勝利した！</button>
-    </div>
-    <div id="finishedMsg" style="display: none; text-align: center; color: var(--success); font-weight: bold;">
-      ✓ 結果を送信しました。次ラウンドをお待ちください。
-    </div>
-  </div>
+      <div class="score-group-label">勝利報告（あなたの勝ち）</div>
+      <div class="score-buttons">
+        <button class="btn-win-score" onclick="submitResult(2, 0)">2 - 0 (勝利)</button>
+        <button class="btn-win-score" onclick="submitResult(2, 1)">2 - 1 (勝利)</button>
+      </div>
 
-  <!-- 3. 運営用コントロールパネル（画面下部） -->
-  <div class="card admin-panel">
-    <h3>⚙️ 運営コントロール</h3>
-    <div style="font-size: 0.85rem; margin-bottom: 8px;">
-      参加人数: <span id="adminPlayerCount">0</span> 名
+      <div class="score-group-label">敗北報告（相手の勝ち）</div>
+      <div class="score-buttons">
+        <button class="btn-lose-score" onclick="submitResult(1, 2)">1 - 2 (敗北)</button>
+        <button class="btn-lose-score" onclick="submitResult(0, 2)">0 - 2 (敗北)</button>
+      </div>
+
+      <div class="score-group-label" style="text-align: center; margin-top: 8px;">その他</div>
+      <button class="btn-draw-score" onclick="submitResult(1, 1)">1 - 1 (引き分け)</button>
     </div>
-    <button id="btnAdminNext">次の対戦へ進める (開始)</button>
-    <button id="btnAdminReset" class="secondary">参加者・履歴を初期化</button>
+
+    <!-- 送信完了表示 -->
+    <div id="finishedMsg" style="display: none;">
+      <div class="result-reported">
+        ✓ 結果送信済み: <span id="reportedScoreText">-</span>
+      </div>
+      <button id="btnRevert" class="btn-revert">押し間違えたので修正する</button>
+    </div>
   </div>
 </div>
 
-<!-- Firebase SDK (v10 Modular via CDN) -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
   import { 
-    getFirestore, doc, setDoc, getDoc, getDocs, updateDoc, onSnapshot, 
-    collection, query, where, writeBatch 
+    getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection, query, where, updateDoc 
   } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
+  // ★ あなたの Firebase Config ★
 const firebaseConfig = {
   apiKey: "AIzaSyCuzPz78YXhv9xzJArBBKEhGCw9Fpk3yck",
   authDomain: "my-tourney-app.firebaseapp.com",
@@ -150,72 +200,100 @@ const firebaseConfig = {
   appId: "1:884106201914:web:341be2531f580fb9e15e03",
   measurementId: "G-V2Z2M7YX3E"
 };
-
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  
+  // ★ ここは "main-event" に固定 ★
   const TOURNAMENT_ID = "main-event";
 
   let myPlayerId = localStorage.getItem("tourney_player_id");
   let myPlayerName = localStorage.getItem("tourney_player_name");
+  let currentActiveMatchId = null;
+  let isCurrentPlayer1 = false;
+  let opponentData = null;
 
-  // --- UI 初期設定 ---
   if (myPlayerId) {
-    showPlayerDashboard();
+    showDashboard();
+  } else {
+    showEntry();
   }
 
-  function showPlayerDashboard() {
+  function showDashboard() {
     document.getElementById("entrySection").style.display = "none";
     document.getElementById("playerSection").style.display = "block";
     document.getElementById("myPlayerName").textContent = myPlayerName;
   }
 
-  // --- エントリー処理 ---
+  function showEntry() {
+    document.getElementById("entrySection").style.display = "block";
+    document.getElementById("playerSection").style.display = "none";
+    document.getElementById("playerNameInput").value = "";
+  }
+
+  // --- 1. エントリー ---
   document.getElementById("btnEntry").addEventListener("click", async () => {
     const name = document.getElementById("playerNameInput").value.trim();
-    if (!name) return alert("名前を入力してください");
+    if (!name) return alert("お名前を入力してください");
 
     myPlayerId = "p_" + Math.random().toString(36).substring(2, 9);
     myPlayerName = name;
     localStorage.setItem("tourney_player_id", myPlayerId);
     localStorage.setItem("tourney_player_name", myPlayerName);
 
-    // プレイヤー登録
     await setDoc(doc(db, `tournaments/${TOURNAMENT_ID}/players`, myPlayerId), {
       name: myPlayerName,
       createdAt: Date.now()
     });
 
-    showPlayerDashboard();
+    showDashboard();
   });
 
-  // --- リアルタイム監視（大会全体・自マッチ） ---
-  onSnapshot(doc(db, "tournaments", TOURNAMENT_ID), (docSnap) => {
-    if (!docSnap.exists()) return;
-    const data = docSnap.data();
+  // --- 2. 登録を抜ける（ログアウト機能） ---
+  document.getElementById("btnLeave").addEventListener("click", async () => {
+    if (!confirm("エントリーを取り消して、最初の画面に戻りますか？")) return;
 
+    if (myPlayerId) {
+      try {
+        await deleteDoc(doc(db, `tournaments/${TOURNAMENT_ID}/players`, myPlayerId));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    localStorage.removeItem("tourney_player_id");
+    localStorage.removeItem("tourney_player_name");
+    myPlayerId = null;
+    myPlayerName = null;
+    showEntry();
+  });
+
+  // --- 3. 大会状態の監視 ---
+  onSnapshot(doc(db, "tournaments", TOURNAMENT_ID), (snap) => {
+    if (!snap.exists()) return;
+    const data = snap.data();
     const badge = document.getElementById("roundBadge");
+
     if (data.status === "entry") {
       badge.textContent = "エントリー受付中";
-      document.getElementById("btnAdminNext").textContent = "第1回戦（Set 1 - R1）を開始";
+      resetWaiting("組み合わせの発表をお待ちください");
     } else if (data.status === "finished") {
       badge.textContent = "全日程終了";
-      document.getElementById("btnAdminNext").disabled = true;
+      resetWaiting("全日程が終了しました。お疲れ様でした！");
     } else {
       badge.textContent = `Set ${data.currentSet} - 第${data.currentRound}回戦`;
-      document.getElementById("btnAdminNext").textContent = `次へ進める (現在: S${data.currentSet}-R${data.currentRound})`;
-    }
-
-    if (myPlayerId && data.status === "playing") {
-      listenMyMatch(data.currentSet, data.currentRound);
+      if (myPlayerId) {
+        listenMyMatch(data.currentSet, data.currentRound);
+      }
     }
   });
 
-  // 参加者数の監視（運営用）
-  onSnapshot(collection(db, `tournaments/${TOURNAMENT_ID}/players`), (snap) => {
-    document.getElementById("adminPlayerCount").textContent = snap.size;
-  });
+  function resetWaiting(msg) {
+    document.getElementById("tableNo").textContent = "待機中";
+    document.getElementById("vsInfo").textContent = msg;
+    document.getElementById("actionArea").style.display = "none";
+    document.getElementById("finishedMsg").style.display = "none";
+  }
 
-  // 自分の対戦卓監視
+  // --- 4. 自マッチの監視 ---
   function listenMyMatch(set, round) {
     const q = query(
       collection(db, `tournaments/${TOURNAMENT_ID}/matches`),
@@ -229,181 +307,69 @@ const firebaseConfig = {
         const m = d.data();
         if (m.player1.id === myPlayerId || m.player2.id === myPlayerId) {
           found = true;
-          const isP1 = m.player1.id === myPlayerId;
-          const opp = isP1 ? m.player2 : m.player1;
+          currentActiveMatchId = d.id;
+          isCurrentPlayer1 = (m.player1.id === myPlayerId);
+          opponentData = isCurrentPlayer1 ? m.player2 : m.player1;
 
           document.getElementById("tableNo").textContent = `第 ${m.tableNo} 卓`;
-          document.getElementById("vsInfo").textContent = `vs ${opp.name} さん`;
+          document.getElementById("vsInfo").textContent = `vs ${opponentData.name} さん`;
 
           if (m.status === "finished") {
             document.getElementById("actionArea").style.display = "none";
             document.getElementById("finishedMsg").style.display = "block";
+
+            const myScore = isCurrentPlayer1 ? m.score1 : m.score2;
+            const oppScore = isCurrentPlayer1 ? m.score2 : m.score1;
+            let resultTxt = `${myScore} - ${oppScore}`;
+            if (m.winnerId === myPlayerId) resultTxt += " (あなたの勝利)";
+            else if (m.winnerId === "DRAW") resultTxt += " (引き分け)";
+            else resultTxt += " (相手の勝利)";
+
+            document.getElementById("reportedScoreText").textContent = resultTxt;
           } else {
             document.getElementById("actionArea").style.display = "block";
             document.getElementById("finishedMsg").style.display = "none";
-            
-            // 勝利報告ボタン
-            document.getElementById("btnWin").onclick = async () => {
-              await updateDoc(doc(db, `tournaments/${TOURNAMENT_ID}/matches`, d.id), {
-                winnerId: myPlayerId,
-                status: "finished"
-              });
-            };
           }
         }
       });
 
       if (!found) {
-        document.getElementById("tableNo").textContent = "待機中";
-        document.getElementById("vsInfo").textContent = "対戦表の更新をお待ちください";
-        document.getElementById("actionArea").style.display = "none";
+        resetWaiting("対戦の割り当てがありません（または待機中）");
       }
     });
   }
 
-  // --- 運営ロジック：マッチング作成＆進行 ---
-  document.getElementById("btnAdminNext").addEventListener("click", async () => {
-    const tourneyRef = doc(db, "tournaments", TOURNAMENT_ID);
-    const tourneySnap = await getDoc(tourneyRef);
-    let curSet = 1, curRound = 0, status = "entry";
+  // --- 5. スコア送信 ---
+  window.submitResult = async function(myScore, oppScore) {
+    if (!currentActiveMatchId) return;
 
-    if (tourneySnap.exists()) {
-      const d = tourneySnap.data();
-      curSet = d.currentSet || 1;
-      curRound = d.currentRound || 0;
-      status = d.status || "entry";
-    }
+    let winnerId = null;
+    if (myScore > oppScore) winnerId = myPlayerId;
+    else if (myScore < oppScore) winnerId = opponentData.id;
+    else winnerId = "DRAW";
 
-    let nextSet = curSet;
-    let nextRound = curRound + 1;
+    const score1 = isCurrentPlayer1 ? myScore : oppScore;
+    const score2 = isCurrentPlayer1 ? oppScore : myScore;
 
-    if (status === "entry") {
-      nextSet = 1;
-      nextRound = 1;
-    } else if (nextRound > 3) {
-      nextSet = curSet + 1;
-      nextRound = 1;
-    }
-
-    if (nextSet > 3) {
-      await updateDoc(tourneyRef, { status: "finished" });
-      alert("全3セット（計9試合）が終了しました！");
-      return;
-    }
-
-    // プレイヤー取得
-    const pSnap = await getDocs(collection(db, `tournaments/${TOURNAMENT_ID}/players`));
-    const players = pSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-    if (players.length < 2) return alert("参加者が2名以上必要です");
-
-    // 過去対戦履歴の取得（同セット内の再戦回避・勝敗判定用）
-    let currentSetMatches = [];
-    if (nextRound > 1) {
-      const mSnap = await getDocs(query(
-        collection(db, `tournaments/${TOURNAMENT_ID}/matches`),
-        where("set", "==", nextSet)
-      ));
-      currentSetMatches = mSnap.docs.map(d => d.data());
-    }
-
-    const matches = createPairings(players, currentSetMatches, nextSet, nextRound);
-
-    // バッチ書き込み
-    const batch = writeBatch(db);
-    matches.forEach(m => {
-      const mRef = doc(collection(db, `tournaments/${TOURNAMENT_ID}/matches`));
-      batch.set(mRef, m);
+    await updateDoc(doc(db, `tournaments/${TOURNAMENT_ID}/matches`, currentActiveMatchId), {
+      score1: score1,
+      score2: score2,
+      winnerId: winnerId,
+      status: "finished"
     });
-    batch.set(tourneyRef, {
-      currentSet: nextSet,
-      currentRound: nextRound,
-      status: "playing"
-    }, { merge: true });
+  };
 
-    await batch.commit();
-  });
+  // --- 6. 修正ボタン ---
+  document.getElementById("btnRevert").addEventListener("click", async () => {
+    if (!currentActiveMatchId) return;
+    if (!confirm("スコアを送信前に戻して修正しますか？")) return;
 
-  // スイスドロー / 完全リセット生成関数
-  function createPairings(players, setMatches, set, round) {
-    let pool = [];
-
-    if (round === 1) {
-      // セット第1戦：完全ランダム
-      pool = [...players].sort(() => Math.random() - 0.5).map(p => ({
-        id: p.id, name: p.name, wins: 0, opps: []
-      }));
-    } else {
-      // セット内スイスドロー集計
-      const map = new Map();
-      players.forEach(p => map.set(p.id, { id: p.id, name: p.name, wins: 0, opps: [] }));
-
-      setMatches.forEach(m => {
-        const p1 = map.get(m.player1.id);
-        const p2 = map.get(m.player2.id);
-        if (p1 && p2) {
-          p1.opps.push(p2.id);
-          p2.opps.push(p1.id);
-          if (m.winnerId === p1.id) p1.wins++;
-          if (m.winnerId === p2.id) p2.wins++;
-        }
-      });
-
-      pool = Array.from(map.values()).sort((a, b) => b.wins - a.wins || Math.random() - 0.5);
-    }
-
-    const result = [];
-    const used = new Set();
-    let table = 1;
-
-    for (let i = 0; i < pool.length; i++) {
-      const p1 = pool[i];
-      if (used.has(p1.id)) continue;
-
-      let targetIdx = -1;
-      for (let j = i + 1; j < pool.length; j++) {
-        const p2 = pool[j];
-        if (!used.has(p2.id) && !p1.opps.includes(p2.id)) {
-          targetIdx = j;
-          break;
-        }
-      }
-      if (targetIdx === -1) {
-        for (let j = i + 1; j < pool.length; j++) {
-          if (!used.has(pool[j].id)) { targetIdx = j; break; }
-        }
-      }
-
-      if (targetIdx !== -1) {
-        const p2 = pool[targetIdx];
-        used.add(p1.id);
-        used.add(p2.id);
-        result.push({
-          set, round, tableNo: table++,
-          player1: { id: p1.id, name: p1.name },
-          player2: { id: p2.id, name: p2.name },
-          winnerId: null,
-          status: "playing"
-        });
-      } else {
-        used.add(p1.id);
-        result.push({
-          set, round, tableNo: table++,
-          player1: { id: p1.id, name: p1.name },
-          player2: { id: "BYE", name: "不戦勝" },
-          winnerId: p1.id,
-          status: "finished"
-        });
-      }
-    }
-    return result;
-  }
-
-  // 初期化ボタン（テスト時用）
-  document.getElementById("btnAdminReset").addEventListener("click", async () => {
-    if (!confirm("大会データを初期化しますか？")) return;
-    await setDoc(doc(db, "tournaments", TOURNAMENT_ID), { status: "entry", currentSet: 1, currentRound: 0 });
-    localStorage.clear();
-    location.reload();
+    await updateDoc(doc(db, `tournaments/${TOURNAMENT_ID}/matches`, currentActiveMatchId), {
+      status: "playing",
+      winnerId: null,
+      score1: null,
+      score2: null
+    });
   });
 </script>
 </body>
