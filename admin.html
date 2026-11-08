@@ -15,129 +15,34 @@
       --card: #ffffff;
       --border: #cbd5e1;
     }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg);
-      margin: 0;
-      padding: 16px;
-      display: flex;
-      justify-content: center;
-    }
-    .container {
-      width: 100%;
-      max-width: 800px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 16px; display: flex; justify-content: center; }
+    .container { width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 16px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     h2, h3 { margin-top: 0; }
-    .status-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #e2e8f0;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 1.1rem;
-      font-weight: bold;
-    }
-    button {
-      padding: 12px 16px;
-      font-size: 1rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .button-group {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 16px;
-    }
+    .status-bar { display: flex; justify-content: space-between; align-items: center; background: #e2e8f0; padding: 12px 16px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; }
+    button { padding: 12px 16px; font-size: 1rem; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; }
+    .button-group { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
     .btn-main { background: var(--primary); color: white; width: 100%; font-size: 1.1rem; }
     .btn-extra { background: var(--orange); color: white; width: 100%; }
     .btn-next-set { background: var(--purple); color: white; width: 100%; }
     .btn-danger { background: #fee2e2; color: var(--danger); border: 1px solid var(--danger); }
-    .table-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 12px;
-    }
-    .match-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: #fff;
-    }
-    .match-row.finished {
-      background: #f0fdf4;
-      border-color: #86efac;
-    }
-    .score-select {
-      padding: 6px 8px;
-      font-size: 0.95rem;
-      border-radius: 4px;
-      border: 1px solid var(--border);
-    }
-    .player-chip {
-      display: inline-flex;
-      align-items: center;
-      background: #f1f5f9;
-      border: 1px solid var(--border);
-      padding: 4px 10px;
-      border-radius: 9999px;
-      margin: 4px;
-      font-size: 0.9rem;
-    }
-    .btn-qr-chip {
-      background: #38bdf8;
-      color: #0f172a;
-      border: none;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: bold;
-      cursor: pointer;
-      margin-left: 8px;
-    }
-
-    /* QRポップアップ用のスタイル */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
-    .modal-content {
-      background: white;
-      padding: 24px;
-      border-radius: 12px;
-      text-align: center;
-      max-width: 320px;
-      width: 90%;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    }
+    .table-list { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+    .match-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: #fff; }
+    .match-row.finished { background: #f0fdf4; border-color: #86efac; }
+    .score-select { padding: 6px 8px; font-size: 0.95rem; border-radius: 4px; border: 1px solid var(--border); }
+    .player-chip { display: inline-flex; align-items: center; background: #f1f5f9; border: 1px solid var(--border); padding: 4px 10px; border-radius: 9999px; margin: 4px; font-size: 0.9rem; }
+    .player-chip.disabled { background: #fee2e2; border-color: #fca5a5; opacity: 0.7; }
+    .btn-chip-action { border: none; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; cursor: pointer; margin-left: 6px; }
+    .btn-active-toggle { background: #10b981; color: white; }
+    .btn-active-toggle.is-off { background: #ef4444; color: white; }
+    .btn-qr-chip { background: #38bdf8; color: #0f172a; }
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 999; }
+    .modal-content { background: white; padding: 24px; border-radius: 12px; text-align: center; max-width: 320px; width: 90%; }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <!-- 大会進行パネル -->
   <div class="card">
     <h2>⚙️ 大会運営コントロール</h2>
     <div class="status-bar">
@@ -145,19 +50,13 @@
       <div>未完了: <span id="lblPending" style="color: var(--danger);">0</span> 卓</div>
     </div>
 
-    <!-- 優勝者アナウンス -->
-    <div id="winnerAlert" style="display: none; background: #fef08a; border: 1px solid #facc15; padding: 12px; border-radius: 8px; margin-top: 12px; font-weight: bold; text-align: center; color: #854d0e;">
-      🏆 全勝者確定: <span id="winnerNameText">-</span> さんが単独優勝！
-    </div>
-
     <div class="button-group">
-      <button id="btnAdvance" class="btn-main">第1回戦 (Set 1 - R1) を開始</button>
+      <button id="btnAdvance" class="btn-main">第1回戦を開始</button>
       <button id="btnExtraMatch" class="btn-extra" style="display: none;">🔥 追加でもう1戦！（同星マッチング）</button>
-      <button id="btnNextSet" class="btn-next-set" style="display: none;">⏩ 次のセットへ！（成績リセット＆シャッフル）</button>
+      <button id="btnNextSet" class="btn-next-set" style="display: none;">⏩ 次のセットへ！（成績リセット＆R1へ）</button>
     </div>
   </div>
 
-  <!-- 対戦卓一覧と手動スコア修正 -->
   <div class="card">
     <h3>⚔️ 対戦卓一覧とスコア管理</h3>
     <div id="matchesContainer" class="table-list">
@@ -165,24 +64,22 @@
     </div>
   </div>
 
-  <!-- 参加者リスト（QR復帰ボタン付き） -->
   <div class="card">
-    <h3>👥 エントリー済み参加者 (<span id="lblPlayerCount">0</span> 名)</h3>
+    <h3>👥 参加者リスト (<span id="lblPlayerCount">0</span> 名 / 有効: <span id="lblActiveCount" style="color:var(--success);">0</span> 名)</h3>
+    <p style="font-size:0.8rem; color:#64748b; margin-top:0;">※「離脱中」に設定した人は次戦のペアリングから自動除外されます。</p>
     <div id="playersContainer">読み込み中...</div>
   </div>
 
-  <!-- 危険ゾーン（初期化） -->
   <div class="card" style="border-color: #fca5a5; background: #fff5f5;">
     <h3 style="color: var(--danger); margin-bottom: 8px;">⚠️ 危険エリア（大会データ初期化）</h3>
     <button id="btnResetAll" class="btn-danger">全データを完全にリセットする</button>
   </div>
 </div>
 
-<!-- QRコードポップアップモーダル -->
 <div id="qrModal" class="modal-overlay" onclick="closeQrModal()">
   <div class="modal-content" onclick="event.stopPropagation()">
     <h3 id="qrModalPlayerName" style="margin-top: 0;">-</h3>
-    <p style="font-size: 0.85rem; color: #64748b; margin: 0 0 12px 0;">このQRをスマホのカメラで読むと即座に自分の画面へ復帰できます</p>
+    <p style="font-size: 0.85rem; color: #64748b; margin: 0 0 12px 0;">このQRをスマホで読むと復帰できます</p>
     <img id="qrModalImg" src="" style="width: 200px; height: 200px; background: white; border: 1px solid #cbd5e1; padding: 4px;" alt="復帰QR">
     <div style="margin-top: 16px;">
       <button onclick="closeQrModal()" style="background: #475569; color: white; width: 100%;">閉じる</button>
@@ -206,7 +103,6 @@ const firebaseConfig = {
   appId: "1:884106201914:web:341be2531f580fb9e15e03",
   measurementId: "G-V2Z2M7YX3E"
 };
-
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const TOURNAMENT_ID = "main-event";
@@ -214,10 +110,9 @@ const firebaseConfig = {
   let currentTourneyData = null;
   let cachedPlayers = [];
 
-  // 1. 大会ステータス監視
   onSnapshot(doc(db, "tournaments", TOURNAMENT_ID), (snap) => {
     if (!snap.exists()) {
-      initTournamentDoc();
+      setDoc(doc(db, "tournaments", TOURNAMENT_ID), { status: "entry", currentSet: 1, currentRound: 0 });
       return;
     }
     currentTourneyData = snap.data();
@@ -228,14 +123,6 @@ const firebaseConfig = {
       document.getElementById("matchesContainer").innerHTML = '<div style="color: #64748b;">進行中の試合はありません。</div>';
     }
   });
-
-  async function initTournamentDoc() {
-    await setDoc(doc(db, "tournaments", TOURNAMENT_ID), {
-      status: "entry",
-      currentSet: 1,
-      currentRound: 0
-    });
-  }
 
   function updateHeaderUI() {
     const d = currentTourneyData;
@@ -259,29 +146,40 @@ const firebaseConfig = {
     }
   }
 
-  // 2. 参加者監視＆個別QRボタン配置
+  // 参加者監視（有効・無効切り替えUI）
   onSnapshot(collection(db, `tournaments/${TOURNAMENT_ID}/players`), (snap) => {
     cachedPlayers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     document.getElementById("lblPlayerCount").textContent = cachedPlayers.length;
+
+    const activeCount = cachedPlayers.filter(p => p.isActive !== false).length;
+    document.getElementById("lblActiveCount").textContent = activeCount;
 
     const container = document.getElementById("playersContainer");
     if (cachedPlayers.length === 0) {
       container.innerHTML = '<span style="color:#64748b;">参加者がまだいません。</span>';
     } else {
-      container.innerHTML = cachedPlayers.map(p => `
-        <span class="player-chip">
-          ${p.name}
-          <button class="btn-qr-chip" onclick="showRejoinQR('${p.id}', '${p.name}')">📱QR復帰</button>
-        </span>
-      `).join("");
+      container.innerHTML = cachedPlayers.map(p => {
+        const isActive = p.isActive !== false;
+        return `
+          <span class="player-chip ${isActive ? '' : 'disabled'}">
+            <strong>${p.name}</strong>
+            <button class="btn-chip-action btn-active-toggle ${isActive ? '' : 'is-off'}" onclick="togglePlayerActive('${p.id}', ${!isActive})">
+              ${isActive ? '参加中' : '離脱中'}
+            </button>
+            <button class="btn-chip-action btn-qr-chip" onclick="showRejoinQR('${p.id}', '${p.name}')">📱QR</button>
+          </span>
+        `;
+      }).join("");
     }
   });
 
-  // 個別復帰QRコードの表示処理
+  window.togglePlayerActive = async function(pid, newState) {
+    await updateDoc(doc(db, `tournaments/${TOURNAMENT_ID}/players`, pid), { isActive: newState });
+  };
+
   window.showRejoinQR = function(playerId, playerName) {
     const baseUrl = window.location.href.split("/admin.html")[0];
     const rejoinUrl = `${baseUrl}/index.html?pid=${playerId}`;
-    
     document.getElementById("qrModalPlayerName").textContent = `${playerName} さんの復帰QR`;
     document.getElementById("qrModalImg").src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(rejoinUrl)}`;
     document.getElementById("qrModal").style.display = "flex";
@@ -291,18 +189,11 @@ const firebaseConfig = {
     document.getElementById("qrModal").style.display = "none";
   };
 
-  // 3. 対戦卓監視 ＆ 手動修正
   function listenMatches(set, round) {
-    const q = query(
-      collection(db, `tournaments/${TOURNAMENT_ID}/matches`),
-      where("set", "==", set),
-      where("round", "==", round)
-    );
-
-    onSnapshot(q, async (snap) => {
+    const q = query(collection(db, `tournaments/${TOURNAMENT_ID}/matches`), where("set", "==", set), where("round", "==", round));
+    onSnapshot(q, (snap) => {
       const container = document.getElementById("matchesContainer");
       container.innerHTML = "";
-
       let pendingCount = 0;
       const matches = [];
       snap.forEach(d => matches.push({ id: d.id, ...d.data() }));
@@ -342,39 +233,8 @@ const firebaseConfig = {
         `;
         container.appendChild(div);
       });
-
       document.getElementById("lblPending").textContent = pendingCount;
-
-      if (pendingCount === 0 && matches.length > 0) {
-        checkSingleWinner(set, round);
-      } else {
-        document.getElementById("winnerAlert").style.display = "none";
-      }
     });
-  }
-
-  async function checkSingleWinner(set, round) {
-    const snap = await getDocs(query(
-      collection(db, `tournaments/${TOURNAMENT_ID}/matches`),
-      where("set", "==", set)
-    ));
-    const winCounts = new Map();
-    cachedPlayers.forEach(p => winCounts.set(p.id, { name: p.name, wins: 0 }));
-
-    snap.forEach(d => {
-      const m = d.data();
-      if (m.winnerId && winCounts.has(m.winnerId)) {
-        winCounts.get(m.winnerId).wins++;
-      }
-    });
-
-    const undefeated = Array.from(winCounts.values()).filter(p => p.wins === round);
-    if (undefeated.length === 1) {
-      document.getElementById("winnerAlert").style.display = "block";
-      document.getElementById("winnerNameText").textContent = undefeated[0].name;
-    } else {
-      document.getElementById("winnerAlert").style.display = "none";
-    }
   }
 
   window.manualUpdateScore = async function(matchId, p1Id, p2Id, val) {
@@ -389,9 +249,10 @@ const firebaseConfig = {
     await updateDoc(matchRef, { score1: s1, score2: s2, winnerId: winnerId, status: "finished" });
   };
 
-  // 4. ラウンド進行処理
   async function generateNextRound(targetSet, targetRound) {
-    if (cachedPlayers.length < 2) return alert("参加者が2名以上必要です。");
+    // 有効なプレイヤーのみ抽出
+    const activePlayers = cachedPlayers.filter(p => p.isActive !== false);
+    if (activePlayers.length < 2) return alert("有効な参加者が2名以上必要です。");
 
     const pending = parseInt(document.getElementById("lblPending").textContent, 10);
     if (currentTourneyData.status === "playing" && pending > 0) {
@@ -400,27 +261,21 @@ const firebaseConfig = {
 
     let currentSetMatches = [];
     if (targetRound > 1) {
-      const snap = await getDocs(query(
-        collection(db, `tournaments/${TOURNAMENT_ID}/matches`),
-        where("set", "==", targetSet)
-      ));
+      const snap = await getDocs(query(collection(db, `tournaments/${TOURNAMENT_ID}/matches`), where("set", "==", targetSet)));
       currentSetMatches = snap.docs.map(d => d.data());
     }
 
-    const matches = createPairings(cachedPlayers, currentSetMatches, targetSet, targetRound);
-
+    const matches = createPairings(activePlayers, currentSetMatches, targetSet, targetRound);
     const batch = writeBatch(db);
     matches.forEach(m => {
       const newRef = doc(collection(db, `tournaments/${TOURNAMENT_ID}/matches`));
       batch.set(newRef, m);
     });
-
     batch.set(doc(db, "tournaments", TOURNAMENT_ID), {
       currentSet: targetSet,
       currentRound: targetRound,
       status: "playing"
     }, { merge: true });
-
     await batch.commit();
   }
 
@@ -439,28 +294,21 @@ const firebaseConfig = {
   document.getElementById("btnNextSet").addEventListener("click", () => {
     const cur = currentTourneyData;
     const nextSet = (cur.currentSet || 1) + 1;
-    if (!confirm(`Set ${cur.currentSet} を終了し、成績をリセットして Set ${nextSet} - 第1回戦 を開始しますか？`)) return;
+    if (!confirm(`Set ${cur.currentSet} を終了し、成績リセットして Set ${nextSet}-R1 を開始しますか？`)) return;
     generateNextRound(nextSet, 1);
   });
 
-  // 5. スイスドロー自動ペアリング
   function createPairings(players, setMatches, set, round) {
     let pool = [];
-
     if (round === 1) {
-      pool = [...players].sort(() => Math.random() - 0.5).map(p => ({
-        id: p.id, name: p.name, wins: 0, opps: []
-      }));
+      pool = [...players].sort(() => Math.random() - 0.5).map(p => ({ id: p.id, name: p.name, wins: 0, opps: [] }));
     } else {
       const map = new Map();
       players.forEach(p => map.set(p.id, { id: p.id, name: p.name, wins: 0, opps: [] }));
-
       setMatches.forEach(m => {
-        const p1 = map.get(m.player1.id);
-        const p2 = map.get(m.player2.id);
+        const p1 = map.get(m.player1.id), p2 = map.get(m.player2.id);
         if (p1 && p2) {
-          p1.opps.push(p2.id);
-          p2.opps.push(p1.id);
+          p1.opps.push(p2.id); p2.opps.push(p1.id);
           if (m.winnerId === p1.id) p1.wins++;
           if (m.winnerId === p2.id) p2.wins++;
         }
@@ -509,7 +357,6 @@ const firebaseConfig = {
     return result;
   }
 
-  // 初期化
   document.getElementById("btnResetAll").addEventListener("click", async () => {
     const input = prompt("テストデータを全て消去しますか？\n実行する場合は「リセット」と入力してください。");
     if (input !== "リセット") return;
@@ -524,10 +371,7 @@ const firebaseConfig = {
     pSnap.forEach(d => batch2.delete(d.ref));
     await batch2.commit();
 
-    await setDoc(doc(db, "tournaments", TOURNAMENT_ID), {
-      status: "entry", currentSet: 1, currentRound: 0
-    });
-
+    await setDoc(doc(db, "tournaments", TOURNAMENT_ID), { status: "entry", currentSet: 1, currentRound: 0 });
     localStorage.clear();
     alert("初期化完了！");
   });
